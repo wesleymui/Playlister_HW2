@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 
+//Hello
 // IMPORT DATA MANAGEMENT AND TRANSACTION STUFF
 import DBManager from './db/DBManager';
 import jsTPS from './common/jsTPS.js';
