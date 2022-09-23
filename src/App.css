@@ -19,7 +19,7 @@ body {
 
 #root {
   background-color: var(--swatch-primary);
-  font-family: serif;
+  font-family: 'Tangerine', serif; 
   position: absolute;
   width: 80%;
   left: 10%;
@@ -116,7 +116,7 @@ body {
 }
 
 .unselected-list-card:hover {
-  cursor: pointer;
+  cursor: default;
   background-color: var(--swatch-contrast);
   color:white;
 }
@@ -131,7 +131,8 @@ body {
 }
 
 .list-card-button {
-  float:right;
+  margin-left: auto;
+  float: right;
   font-size:18pt;
 }
 
