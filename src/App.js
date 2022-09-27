@@ -237,6 +237,18 @@ class App extends React.Component {
         }
         this.setStateWithUpdatedList(list);
     }
+
+    //THIS FUNCTION ADDS A SONG TO THE CURRENT LIST
+    addSong = () => {
+        let list = this.state.currentList;
+        let newSong = {
+            "title": "Untitled",
+            "artist": "Unknown",
+            "youTubeId": ""
+        }
+        list.songs.push(newSong);
+        this.setStateWithUpdatedList(list);
+    }
     // THIS FUNCTION EDITS A SONG IN THE CURRENT LIST
     editSong = () => {
         let list = this.state.currentList;
@@ -372,6 +384,7 @@ class App extends React.Component {
                     canUndo={canUndo}
                     canRedo={canRedo}
                     canClose={canClose} 
+                    addSongCallback={this.addSong}
                     undoCallback={this.undo}
                     redoCallback={this.redo}
                     closeCallback={this.closeCurrentList}
