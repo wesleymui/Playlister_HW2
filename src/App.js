@@ -8,6 +8,7 @@ import jsTPS from './common/jsTPS.js';
 // OUR TRANSACTIONS
 import MoveSong_Transaction from './transactions/MoveSong_Transaction.js';
 import AddSong_Transaction from './transactions/AddSong_Transaction.js';
+import EditSong_Transaction from './transactions/EditSong_Transaction.js';
 
 // THESE REACT COMPONENTS ARE MODALS
 import DeleteListModal from './components/DeleteListModal.js';
@@ -246,17 +247,10 @@ class App extends React.Component {
         this.setStateWithUpdatedList(list);
     }
     // THIS FUNCTION EDITS A SONG IN THE CURRENT LIST
-    editSong = (index) => {
+    editSong = (newSong, index) => {
         let list = this.state.currentList;
-        let newTitle = document.getElementById("title");
-        let newArtist = document.getElementById("artist");
-        let newYouTubeId = document.getElementById("youtubeid");
-        let newSong = {
-            "title": newTitle.value,
-            "artist": newArtist.value,
-            "youTubeId": newYouTubeId.value
-        }
-        list.songs[this.state.currSongIndex] = newSong;
+        console.log('index: ' + index);
+        list.songs[index] = newSong;
         this.hideEditSongModal();
         this.setStateWithUpdatedList(list);
     }
@@ -276,6 +270,20 @@ class App extends React.Component {
 
     addAddSongTransaction = () => {
         let transaction = new AddSong_Transaction(this, this.state.currentList.songs.length);
+        this.tps.addTransaction(transaction);
+    }
+
+    addEditSongTransaction = () => {
+        let prevSong = this.state.currentList.songs[this.state.currSongIndex];
+        let newTitle = document.getElementById("title");
+        let newArtist = document.getElementById("artist");
+        let newYouTubeId = document.getElementById("youtubeid");
+        let newSong = {
+            "title": newTitle.value,
+            "artist": newArtist.value,
+            "youTubeId": newYouTubeId.value
+        }
+        let transaction = new EditSong_Transaction(this, this.state.currSongIndex, newSong, prevSong);
         this.tps.addTransaction(transaction);
     }
 
@@ -321,7 +329,7 @@ class App extends React.Component {
 
     markSongForUpdate = (songIndex) => {
         this.setState(prevState => ({
-            currSongIndex: songIndex
+            currSongIndex: songIndex,
         }), () => {
             let title = document.getElementById("title");
             title.value = this.state.currentList.songs[songIndex].title;
@@ -403,7 +411,7 @@ class App extends React.Component {
                 />
                 <EditSongModal
                     hideEditSongModalCallback={this.hideEditSongModal}
-                    editSongCallback={this.editSong} //Implement
+                    editSongCallback={this.addEditSongTransaction}
                 />
                 <DeleteSongModal
                     songKeyPair={this.state.songKeyPairMarkedForDeletion}
