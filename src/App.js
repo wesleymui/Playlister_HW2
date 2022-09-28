@@ -7,6 +7,7 @@ import jsTPS from './common/jsTPS.js';
 
 // OUR TRANSACTIONS
 import MoveSong_Transaction from './transactions/MoveSong_Transaction.js';
+import AddSong_Transaction from './transactions/AddSong_Transaction.js';
 
 // THESE REACT COMPONENTS ARE MODALS
 import DeleteListModal from './components/DeleteListModal.js';
@@ -239,18 +240,13 @@ class App extends React.Component {
     }
 
     //THIS FUNCTION ADDS A SONG TO THE CURRENT LIST
-    addSong = () => {
+    addSong = (newSong, index) => {
         let list = this.state.currentList;
-        let newSong = {
-            "title": "Untitled",
-            "artist": "Unknown",
-            "youTubeId": ""
-        }
-        list.songs.push(newSong);
+        list.songs.splice(index, 0, newSong);
         this.setStateWithUpdatedList(list);
     }
     // THIS FUNCTION EDITS A SONG IN THE CURRENT LIST
-    editSong = () => {
+    editSong = (index) => {
         let list = this.state.currentList;
         let newTitle = document.getElementById("title");
         let newArtist = document.getElementById("artist");
@@ -260,17 +256,14 @@ class App extends React.Component {
             "artist": newArtist.value,
             "youTubeId": newYouTubeId.value
         }
-        console.log(newSong);
         list.songs[this.state.currSongIndex] = newSong;
-        console.log(list);
         this.hideEditSongModal();
         this.setStateWithUpdatedList(list);
     }
     // THIS FUNCTION DELETES A SONG FROM THE CURRENT LIST
-    deleteSong = () => {
+    deleteSong = (index) => {
         let list = this.state.currentList;
-        let currIndex = this.state.currentSongIndex;
-        list.songs.splice(currIndex, 1);
+        list.songs.splice(index, 1);
         this.hideDeleteSongModal();
         this.setStateWithUpdatedList(list);
     }
@@ -280,6 +273,12 @@ class App extends React.Component {
         let transaction = new MoveSong_Transaction(this, start, end);
         this.tps.addTransaction(transaction);
     }
+
+    addAddSongTransaction = () => {
+        let transaction = new AddSong_Transaction(this, this.state.currentList.songs.length);
+        this.tps.addTransaction(transaction);
+    }
+
     // THIS FUNCTION BEGINS THE PROCESS OF PERFORMING AN UNDO
     undo = () => {
         if (this.tps.hasTransactionToUndo()) {
@@ -384,7 +383,7 @@ class App extends React.Component {
                     canUndo={canUndo}
                     canRedo={canRedo}
                     canClose={canClose} 
-                    addSongCallback={this.addSong}
+                    addSongCallback={this.addAddSongTransaction}
                     undoCallback={this.undo}
                     redoCallback={this.redo}
                     closeCallback={this.closeCurrentList}
