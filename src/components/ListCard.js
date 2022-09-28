@@ -11,9 +11,11 @@ export default class ListCard extends React.Component {
     }
     handleClick = (event) => {
         if (event.detail === 1) {
+            console.log('single click');
             this.handleLoadList(event);
         }
         else if (event.detail === 2) {
+            console.log('double click');
             this.handleToggleEdit(event);
         }
     }
