@@ -9,6 +9,7 @@ import jsTPS from './common/jsTPS.js';
 import MoveSong_Transaction from './transactions/MoveSong_Transaction.js';
 import AddSong_Transaction from './transactions/AddSong_Transaction.js';
 import EditSong_Transaction from './transactions/EditSong_Transaction.js';
+import RemoveSong_Transaction from './transactions/RemoveSong_Transaction.js';
 
 // THESE REACT COMPONENTS ARE MODALS
 import DeleteListModal from './components/DeleteListModal.js';
@@ -287,6 +288,12 @@ class App extends React.Component {
         this.tps.addTransaction(transaction);
     }
 
+    addRemoveSongTransaction = () => {
+        let removedSong = this.state.currentList.songs[this.state.deleteSongIndex];
+        let transaction = new RemoveSong_Transaction(this, this.state.deleteSongIndex, removedSong);
+        this.tps.addTransaction(transaction);
+    }
+
     // THIS FUNCTION BEGINS THE PROCESS OF PERFORMING AN UNDO
     undo = () => {
         if (this.tps.hasTransactionToUndo()) {
@@ -416,7 +423,7 @@ class App extends React.Component {
                 <DeleteSongModal
                     songKeyPair={this.state.songKeyPairMarkedForDeletion}
                     hideDeleteSongModalCallback={this.hideDeleteSongModal}
-                    deleteSongCallback={this.deleteSong}
+                    deleteSongCallback={this.addRemoveSongTransaction}
                 />
             </Fragment>
         );
