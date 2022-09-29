@@ -154,6 +154,10 @@ body {
   cursor: not-allowed;
 }
 
+.disabled {
+  background-color: lightgray;
+}
+
 .playlister-song, .playlister-song-dragged-to { 
   display:flex;
   align-items: center;

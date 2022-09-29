@@ -44,6 +44,8 @@ class App extends React.Component {
             currentList : null,
             currentSongIndex : null,
             deleteSongIndex : null,
+            listOpen: false,
+            modalOpen: false,
             sessionData : loadedSessionData
         }
     }
@@ -135,8 +137,12 @@ class App extends React.Component {
         });
     }
     deleteMarkedList = () => {
-        this.deleteList(this.state.listKeyPairMarkedForDeletion.key);
-        this.hideDeleteListModal();
+        this.setState(prevState => ({
+            listOpen: false
+        }), () => {
+            this.deleteList(this.state.listKeyPairMarkedForDeletion.key);
+            this.hideDeleteListModal();
+        });
     }
     // THIS FUNCTION SPECIFICALLY DELETES THE CURRENT LIST
     deleteCurrentList = () => {
@@ -183,6 +189,7 @@ class App extends React.Component {
         this.setState(prevState => ({
             listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
             currentList: newCurrentList,
+            listOpen: true,
             sessionData: this.state.sessionData
         }), () => {
             // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
@@ -195,6 +202,7 @@ class App extends React.Component {
         this.setState(prevState => ({
             listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
             currentList: null,
+            listOpen: false,
             sessionData: this.state.sessionData
         }), () => {
             // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
@@ -316,7 +324,7 @@ class App extends React.Component {
         this.setState(prevState => ({
             currentList: prevState.currentList,
             listKeyPairMarkedForDeletion : keyPair,
-            sessionData: prevState.sessionData
+            sessionData: prevState.sessionData,
         }), () => {
             // PROMPT THE USER
             this.showDeleteListModal();
@@ -327,7 +335,7 @@ class App extends React.Component {
         this.setState(prevState => ({
             currentList: prevState.currentList,
             songKeyPairMarkedForDeletion: keyPair,
-            deleteSongIndex: songIndex
+            deleteSongIndex: songIndex,
         }), () => {
             //Prompt user
             this.showDeleteSongModal();
@@ -350,40 +358,76 @@ class App extends React.Component {
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
     showDeleteListModal() {
-        let modal = document.getElementById("delete-list-modal");
-        modal.classList.add("is-visible");
+        this.setState(prevState => ({
+            modalOpen: true
+        }), () => {
+            let modal = document.getElementById("delete-list-modal");
+            modal.classList.add("is-visible");
+        });
     }
     // THIS FUNCTION IS FOR HIDING THE MODAL
-    hideDeleteListModal() {
-        let modal = document.getElementById("delete-list-modal");
-        modal.classList.remove("is-visible");
+    hideDeleteListModal = () => {
+        this.setState(prevState => ({
+            modalOpen: false
+        }), () => {
+            let modal = document.getElementById("delete-list-modal");
+            modal.classList.remove("is-visible");
+        });
     }
     showEditSongModal() {
-        let modal = document.getElementById("edit-song-modal");
-        modal.classList.add("is-visible");
+        this.setState(prevState => ({
+            modalOpen: true
+        }), () => {
+            let modal = document.getElementById("edit-song-modal");
+            modal.classList.add("is-visible");
+        });
     }
-    hideEditSongModal() {
-        let modal = document.getElementById("edit-song-modal");
-        modal.classList.remove("is-visible");
+    hideEditSongModal = () => {
+        this.setState(prevState => ({
+            modalOpen: false
+        }), () => {
+            let modal = document.getElementById("edit-song-modal");
+            modal.classList.remove("is-visible");
+        });
     }
     showDeleteSongModal() {
-        let modal = document.getElementById("remove-song-modal");
-        modal.classList.add("is-visible");
+        this.setState(prevState => ({
+            modalOpen: true
+        }), () => {
+            let modal = document.getElementById("remove-song-modal");
+            modal.classList.add("is-visible");
+        });
     }
-    hideDeleteSongModal() {
-        let modal = document.getElementById("remove-song-modal");
-        modal.classList.remove("is-visible");
+    hideDeleteSongModal = () => {
+        this.setState(prevState => ({
+            modalOpen: false
+        }), () => {
+            let modal = document.getElementById("remove-song-modal");
+            modal.classList.remove("is-visible");
+        });
     }
 
+    /*
+    handleKeyDown = (event) => {
+        if((event.metaKey || event.ctrlKey) && event.keyCode === 90) {
+            console.log('undo pressed');
+            this.undo();
+        }
+    }*/
+
     render() {
-        let canAddSong = this.state.currentList !== null;
-        let canUndo = this.tps.hasTransactionToUndo();
-        let canRedo = this.tps.hasTransactionToRedo();
-        let canClose = this.state.currentList !== null;
+        let canAddList = !this.state.listOpen && !this.state.modalOpen;
+        let canAddSong = this.state.currentList !== null && this.state.listOpen && !this.state.modalOpen;
+        let canUndo = this.tps.hasTransactionToUndo() && this.state.listOpen && !this.state.modalOpen;
+        let canRedo = this.tps.hasTransactionToRedo() && this.state.listOpen && !this.state.modalOpen;
+        let canClose = this.state.currentList !== null && this.state.listOpen && !this.state.modalOpen;
+
         return (
-            <Fragment>
-                <Banner />
+            <Fragment
+                /*onKeyDown={this.handleKeyDown}*/>
+                <Banner />z
                 <SidebarHeading
+                    canAddList={canAddList}
                     createNewListCallback={this.createNewList}
                 />
                 <SidebarList
