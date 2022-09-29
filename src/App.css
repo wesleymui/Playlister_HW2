@@ -162,7 +162,16 @@ body {
 }
 
 input {
-  font-size:20pt;
+  font-size:32pt;
+}
+
+.toolbar-button {
+  font-size:36pt;
+  border-width: 1px;
+  border-color: black;
+  border-style: solid;
+  box-shadow: 2px 4px #888888;
+  border-radius: 5px;
 }
 
 
