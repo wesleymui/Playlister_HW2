@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, {Fragment} from 'react';
 import './App.css';
 
 // IMPORT DATA MANAGEMENT AND TRANSACTION STUFF
@@ -408,13 +408,23 @@ class App extends React.Component {
         });
     }
 
-    /*
     handleKeyDown = (event) => {
-        if((event.metaKey || event.ctrlKey) && event.keyCode === 90) {
-            console.log('undo pressed');
-            this.undo();
+        if(event.ctrlKey || event.metaKey) {
+            event.preventDefault();
+            if(event.keyCode === 90) {
+                this.undo();
+                this.forceUpdate();
+            }
+            if(event.keyCode === 89) {
+                this.redo();
+                this.forceUpdate();
+            }
         }
-    }*/
+    }
+
+    componentDidMount() {
+        document.addEventListener('keydown', this.handleKeyDown);
+    }
 
     render() {
         let canAddList = !this.state.listOpen && !this.state.modalOpen;
@@ -425,8 +435,8 @@ class App extends React.Component {
 
         return (
             <Fragment
-                /*onKeyDown={this.handleKeyDown}*/>
-                <Banner />z
+                id='root' onKeyDown={this.handleKeyDown}>
+                <Banner />
                 <SidebarHeading
                     canAddList={canAddList}
                     createNewListCallback={this.createNewList}
